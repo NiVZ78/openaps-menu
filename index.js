@@ -22,7 +22,7 @@ displayConfig.i2cBus = i2cBus;
 
 try {
     var display = require('./lib/display/ssd1306')(displayConfig);
-    displayImage('./static/unicorn.png'); //display logo
+    displayImage('./static/UnicornDABBlack.png'); //display new dabbing Unicorn logo
 } catch (e) {
     console.warn("Could not setup display:", e);
 }
