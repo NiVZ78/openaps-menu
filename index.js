@@ -100,7 +100,7 @@ hidMenu
   bigBGStatus(display, openapsDir);
 })
 .on('showlogo', function () {
- displayImage('./static/unicorn.png');
+ displayImage('./static/UnicornDABBlack.png'); // new dabbing unicorn logo
 })
 .on('showvoltage', function () {
   voltage()
