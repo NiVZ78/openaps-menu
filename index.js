@@ -20,9 +20,21 @@ var openapsDir = "/root/myopenaps"; //if you're using a nonstandard OpenAPS dire
 var displayConfig = require('./config/display.json');
 displayConfig.i2cBus = i2cBus;
 
+// read preferences
+var preferences = {};
+fs.readFile(openapsDir+'/preferences.json', function (err, data) {
+    if (err) throw err;
+    preferences = JSON.parse(data);
+}
+
+// set default boot logo
+var boot_logo = './static/UnicornDABBlack.png';
+// override boot logo if set in preferences            
+if (preferences.boot_logo) { boot_logo = '/static'+preferences.boot_logo; }            
+
 try {
     var display = require('./lib/display/ssd1306')(displayConfig);
-    displayImage('./static/UnicornDABBlack.png'); //display new dabbing Unicorn logo
+    displayImage(boot_logo); //display boot logo
 } catch (e) {
     console.warn("Could not setup display:", e);
 }
@@ -47,18 +59,13 @@ socketServer
 })
 .on('displaystatus', function () {
  if (display) {
-  var preferences;
-  fs.readFile(openapsDir+'/preferences.json', function (err, data) {
-    if (err) throw err;
-    preferences = JSON.parse(data);
-    if (preferences.status_screen && preferences.status_screen == "bigbgstatus") {
+  if (preferences.status_screen && preferences.status_screen == "bigbgstatus") {
       bigBGStatus(display, openapsDir);
     } else if (preferences.status_screen && preferences.status_screen == "off") {
       //don't auto-update the screen if it's turned off
     } else {
       graphStatus(display, openapsDir); //default to graph status
-    }
-  });
+    } 
  }
 })
 
@@ -100,7 +107,7 @@ hidMenu
   bigBGStatus(display, openapsDir);
 })
 .on('showlogo', function () {
- displayImage('./static/UnicornDABBlack.png'); // new dabbing unicorn logo
+ displayImage(boot_logo);
 })
 .on('showvoltage', function () {
   voltage()
